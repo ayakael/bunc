@@ -4,10 +4,11 @@ pkgrel=1
 pkgdesc="A collection of bash libraries that I tend to use in my scripts"
 arch=(any)
 changelog=CHANGELOG.md
-license=('GPL3')
+license=('GPLv3')
 depends=()
+makedepends=('git')
 source=(
-	"${pkgname}::git+ssh://git@github.com/ayakael/${pkgname}.git#branch=master"
+	"${pkgname}::git+https://github.com/ayakael/${pkgname}.git"
 )
 
 sha256sums=(
