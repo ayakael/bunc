@@ -2,7 +2,7 @@
 
 STDERR=$(mktemp /tmp/STDERR.XXXXXXXXXX)
 
-function log {
+_msg(){
 		if [ ${1} = "INDENT" ]; then
 			if [ -z "${1}" ]; then
 				INDENT="0"
