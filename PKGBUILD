@@ -1,7 +1,7 @@
-pkgname=bash-libs
+pkgname=bunc
 pkgver=0.1
 pkgrel=1
-pkgdesc="A collection of bash libraries that I tend to use in my scripts"
+pkgdesc="A functional bash library"
 arch=(any)
 changelog=CHANGELOG.md
 license=('GPLv3')
@@ -20,10 +20,12 @@ prepare(){
 	git checkout ${pkgver}
 }
 
-package() {
+build(){
+    cd ${srcdir}/bunc
+    bash ./build
+}
 
-	# Install the scripts
-    for libs in $(find ${srcdir}/bash-libs/libs/. -type f -printf %f); do
-  	    install -Dm644 "${srcdir}/bash-libs/libs/${libs}" "${pkgdir}/usr/lib/bash-libs/$(echo ${libs} | sed 's|.sh||')"
-    done
+package() {
+	# Install the library
+  	install -Dm644 "${srcdir}/bunc/bunc /usr/lib/bash/bunc"
 }
