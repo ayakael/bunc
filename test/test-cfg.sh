@@ -130,7 +130,7 @@ _test_cfg_query() {
     _msg EXEC "Testing _cfg_query"
     _cfg_insert_row "EL1 EL2 EL3 EL4 EL5"
     _cfg_insert_row "EL6 EL7 EL8 EL9 EL10"
-    local ARG="\$1==\"EL6\""
+    local ARG='$1=="EL6"'
     local CMD="_cfg_query '${ARG}'"
     eval ${CMD} >${STDERR} 2>&1 || { _msg FAIL "_test_cfg_query(): Error in function execution"; }
 

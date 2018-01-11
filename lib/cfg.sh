@@ -27,8 +27,8 @@
 #   drop <row|column} {no|name}
 #       Drops <row-no> or <column-name>.
 #
-#   insert <value-for-col1> <value-for-col2> <...>
-#       Inserts new row with a value per column. Number of arguments must match number of columns.
+#   insert <row|column> <value(s)>
+#       Inserts new row or column. Number of row values must match number of columns.
 #
 #   query <conditional>
 #       Queries which <row-no(s)> fits the <conditional>.
@@ -118,7 +118,7 @@ _cfg_drop() {
     # Argument parser and sanity check
     [[ $# != 2 ]] && { _msg ECHO "_cfg_drop(): Expected 2 arguments"; return 1; }
     local SUBCMD=${1}; shift
-    [[ ! $(_if_array_contains ${SUBCMD} row column) ]] && { _msg ECHO "_cfg_drop(): Expected 'row' or 'column' as subcommand"; return 1; }
+    _if_array_contains ${SUBCMD} row column || { _msg ECHO "_cfg_drop(): Expected 'row' or 'column' as subcommand"; return 1; }
 
     # Dispatcher
     eval _cfg_drop_${SUBCMD} ${1}
@@ -139,20 +139,20 @@ _cfg_drop_column() {
     local NF=$(_cfg_column_to_nf "${COLUMN}")
 
     # Writes new version of file
-    awk 'BEGIN {OFS="\t"}; {$'${NF}'=""; print $0}' ${_CFG_PATH} > ${_CFG_TMP_PATH} && mv ${_CFG_TMP_PATH} ${_CFG_PATH}
+    awk 'BEGIN {OFS="\t"}; $'${NF}'="";1' ${_CFG_PATH} > ${_CFG_TMP_PATH} && mv ${_CFG_TMP_PATH} ${_CFG_PATH}
 }
  
 _cfg_insert() {
     # Argument parser and sanity check
-    [[ $# != 2 ]] && { _msg ECHO "_cfg_insert(): Expected 2 arguments"; return 1; }
     local SUBCMD=${1}; shift
-    [[ ! $(_if_array_contains ${SUBCMD} row column) ]] && { _msg ECHO "_cfg_insert(): Expected 'row' or 'column' as subcommand"; return 1; }
+    _if_array_contains ${SUBCMD} row column || { _msg ECHO "_cfg_insert(): Expected 'row' or 'column' as subcommand"; return 1; }
 
     # Dispatcher
-    eval _cfg_insert_${SUBCMD} ${1}
+    eval _cfg_insert_${SUBCMD} ${@}
 }
 
 _cfg_insert_column() {
+    [[ $# != 1 ]] && { _msg ECHO "_cfg_insert_column(): Expected 1 argument"; return 1; }
     # Argument parser and sanity check
     local VALUE=${1}
     local NX_COLUMN=$(( $(awk 'BEGIN{OFS="\t"}; {if (NR == 1) {print NF}}' ${_CFG_PATH}) + 1 ))
@@ -162,6 +162,7 @@ _cfg_insert_column() {
 }
   
 _cfg_insert_row() {
+    [[ -z ${1+x} ]] && { _msg ECHO "_cfg_insert_row(): Expected at least 1 argument"; return 1; }
     # Argument parser and sanity check
     local valueList=(${@})
     local COLUMN_NO=$(awk 'BEGIN{OFS="\t"}; {if (NR == 1) {print NF}}' ${_CFG_PATH})
@@ -183,7 +184,7 @@ _cfg() {
     [[ -z ${1+x} ]] && { _msg ECHO "_cfg(): Expected command"; return 1; }
     local cmdList="(set-file create print change drop insert query)"
     local CMD=${1}; shift
-    [[ ! $(_if_array_contains ${CMD} ${cmdList[@]}) ]] && { _msg ECHO "_cfg(): Command specified not valid"; return 1; }
+    _if_array_contains ${CMD} ${cmdList[@]} || { _msg ECHO "_cfg(): Command specified not valid"; return 1; }
 
     # Dispatcher
     eval _cfg_$(sed 's|-|_|' <<<"${CMD}") ${@}
