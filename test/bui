@@ -1,0 +1,4 @@
+echorm ${EXEC}
+-e  "#!/bin/bash\n" > ${EXEC}
+1Oautomatically escape when changing lines vim
+2
