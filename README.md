@@ -17,3 +17,6 @@ Set of if functions to make life easier
 ## _ansi
 Sets terminal properties such as cursor position and text color using ANSI
 escape sequences.
+
+## _cfg
+Reads and writes config files delimited by tabs, like fstab, using aw.
