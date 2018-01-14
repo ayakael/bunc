@@ -22,10 +22,10 @@ prepare(){
 
 build(){
     cd ${srcdir}/bunc
-    bash ./build
+    ./build.sh
 }
 
 package() {
 	# Install the library
-  	install -Dm644 "${srcdir}/bunc/bunc /usr/lib/bash/bunc"
+  	install -Dm644 "${srcdir}/bunc/bunc" "${pkgdir}/usr/lib/bash/bunc"
 }
