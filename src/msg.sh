@@ -39,7 +39,7 @@
 #       Prints a normal message
 # }
 
-STDERR=$(mktemp /tmp/STDERR.XXXXXXXXXX)
+STDERR=$(mktemp ${_OPT_TMP}/STDERR.XXXXXXXXXX)
 INDENT=0
 bail() {
     return 1
@@ -77,7 +77,7 @@ _msg(){
 				cat ${STDERR}
 			fi
 			rm ${STDERR}
-			STDERR=$(mktemp /tmp/STDERR.XXXXXXXXXX)
+			STDERR=$(mktemp ${_OPT_TMP}/STDERR.XXXXXXXXXX)
 			echo -en "$(_ansi lt 100)$(_ansi dn "${HEIGHT}")"
 		elif [ ${1} = "FAIL" ]; then
 			shift;
@@ -92,7 +92,7 @@ _msg(){
 				cat ${STDERR}
 			fi
 			rm ${STDERR}
-			STDERR=$(mktemp /tmp/STDERR.XXXXXXXXXX)
+			STDERR=$(mktemp ${_OPT_TMP}/STDERR.XXXXXXXXXX)
 			echo -en "$(_ansi lt 100)$(_ansi dn "${HEIGHT}")"
 			bail
 		elif [ ${1} = "ECHO" ]; then
